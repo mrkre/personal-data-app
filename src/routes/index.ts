@@ -7,7 +7,7 @@ export default () => {
 
   router.get('/', health);
 
-  router.use('/v1', apiV1);
+  router.use('/api/v1', apiV1);
   router.use('/health', health);
 
   return router;
