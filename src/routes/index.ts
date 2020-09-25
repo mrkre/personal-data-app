@@ -6,9 +6,9 @@ export default () => {
   const router = express.Router();
 
   router.get('/', health);
-
-  router.use('/api/v1', apiV1);
   router.use('/health', health);
+
+  router.use('/v1', apiV1());
 
   return router;
 };

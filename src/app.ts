@@ -9,6 +9,7 @@ import mongoose from 'mongoose';
 import bluebird from 'bluebird';
 import { MONGODB_URI, SESSION_SECRET } from './util/secrets';
 import routes from './routes';
+import { health } from './controllers/health';
 
 const MongoStore = mongo(session);
 
@@ -53,6 +54,7 @@ app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }))
 /**
  * API routes.
  */
-app.use('/', routes());
+app.use('/api', routes());
+app.use('/health', health);
 
 export default app;

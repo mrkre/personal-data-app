@@ -4,20 +4,26 @@ import app from '../../src/app';
 
 describe('(Controller) API', () => {
   describe('GET /', () => {
-    it('should return 200 OK', () => {
-      return request(app).get('/').expect(httpStatus.OK);
-    });
-  });
-
-  describe('GET /api', () => {
-    it('should return 404 not found', () => {
-      return request(app).get('/api').expect(httpStatus.NOT_FOUND);
+    it('should return 404 NOT FOUND', () => {
+      return request(app).get('/').expect(httpStatus.NOT_FOUND);
     });
   });
 
   describe('GET /health', () => {
     it('should return 200 OK', () => {
       return request(app).get('/health').expect(httpStatus.OK);
+    });
+  });
+
+  describe('GET /api/health', () => {
+    it('should return 200 OK', () => {
+      return request(app).get('/api/health').expect(httpStatus.OK);
+    });
+  });
+
+  describe('GET /api/v1/health', () => {
+    it('should return 200 OK', () => {
+      return request(app).get('/api/v1/health').expect(httpStatus.OK);
     });
   });
 });
