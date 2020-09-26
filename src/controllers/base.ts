@@ -11,11 +11,12 @@ abstract class BaseController implements Controller {
   public path: string;
   public router: Router;
 
-  constructor() {
-    this.initRoutes();
+  protected constructor(path: string) {
+    this.path = path;
+    this.router = Router();
   }
 
-  public abstract initRoutes(): void;
+  abstract initRoutes(): void;
 
   private static jsonResponse(res: Response, code: number, message: string) {
     return res.status(code).json({ message });
