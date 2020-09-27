@@ -1,7 +1,7 @@
 import { DocumentQuery } from 'mongoose';
 import User, { UserDocument } from '../models/User';
 import { Service } from 'service';
-import { UnauthorizedException } from '../exceptions';
+import { BadRequestException } from '../exceptions';
 import messages from '../messages/auth';
 
 class UserService implements Service {
@@ -24,7 +24,7 @@ class UserService implements Service {
 
     if (existingUser) {
       // throw generic error to prevent malicious user from guessing
-      throw new UnauthorizedException(messages.INVALID_EMAIL_OR_PASSWORD);
+      throw new BadRequestException(messages.INVALID_EMAIL_OR_PASSWORD);
     }
 
     const user = new User({ email, password });
