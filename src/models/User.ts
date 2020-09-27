@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 export type UserDocument = mongoose.Document & {
   email: string;
   password: string;
-  active: boolean;
+  active?: boolean;
   validatePassword: validatePasswordFunction;
 };
 
