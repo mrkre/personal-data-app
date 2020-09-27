@@ -51,7 +51,7 @@ describe('(Services) UserService', () => {
         .then((res) => expect(res).to.not.exist)
         .catch((err) => {
           expect(err).to.exist;
-          expect(err.message).to.equal(messages.INVALID_EMAIL_OR_PASSWORD);
+          expect(err.message).to.equal(messages.USER_EXISTS);
         });
     });
   });

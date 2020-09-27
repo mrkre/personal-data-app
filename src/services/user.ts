@@ -23,8 +23,7 @@ class UserService implements Service {
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      // throw generic error to prevent malicious user from guessing
-      throw new BadRequestException(messages.INVALID_EMAIL_OR_PASSWORD);
+      throw new BadRequestException(messages.USER_EXISTS);
     }
 
     const user = new User({ email, password });
