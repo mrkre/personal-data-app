@@ -24,8 +24,13 @@ class AuthController extends BaseController {
     this.router.post(
       '/login',
       this.validate([
-        body('email').isEmail().withMessage(messages.INVALID_EMAIL),
-        body('password').notEmpty().withMessage(messages.PASSWORD_REQUIRED),
+        body('email').isEmail().trim().withMessage(messages.INVALID_EMAIL),
+        body('password')
+          .exists()
+          .trim()
+          .withMessage(messages.PASSWORD_REQUIRED)
+          .isLength({ min: 6 })
+          .withMessage(messages.PASSWORD_WEAK),
       ]),
       this.login,
     );
@@ -35,7 +40,21 @@ class AuthController extends BaseController {
       this.validate([
         // eslint-disable-next-line @typescript-eslint/camelcase
         body('email').normalizeEmail({ gmail_remove_dots: false }).isEmail().withMessage(messages.INVALID_EMAIL),
-        body('password').notEmpty(),
+        body('password')
+          .exists()
+          .trim()
+          .withMessage(messages.PASSWORD_REQUIRED)
+          .isLength({ min: 6 })
+          .withMessage(messages.PASSWORD_WEAK),
+        body('confirmPassword')
+          .exists()
+          .withMessage(messages.CONFIRM_PASSWORD_REQUIRED)
+          .custom((value, { req }) => {
+            if (value !== req.body.password) {
+              throw new BadRequestException(messages.PASSWORDS_DO_NOT_MATCH);
+            }
+            return true;
+          }),
       ]),
       this.register,
     );
