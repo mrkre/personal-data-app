@@ -8,7 +8,7 @@ import path from 'path';
 import mongoose from 'mongoose';
 import bluebird from 'bluebird';
 import passport from 'passport';
-import { MONGODB_URI, SESSION_SECRET } from './util/secrets';
+import { MONGO_URL, SESSION_SECRET } from './util/secrets';
 import routes from './routes';
 import { handleNotFound, handleError } from './middleware/error';
 
@@ -18,7 +18,7 @@ const MongoStore = mongo(session);
 const app = express();
 
 // Connect to MongoDB
-const mongoUrl = MONGODB_URI;
+const mongoUrl = MONGO_URL;
 mongoose.Promise = bluebird;
 
 mongoose

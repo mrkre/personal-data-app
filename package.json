@@ -20,7 +20,7 @@
     "serve": "node dist/server.js",
     "serve-debug": "nodemon --inspect dist/server.js",
     "start": "yarn serve",
-    "test": "jest --forceExit --coverage --verbose",
+    "test": "NODE_ENV=test jest --forceExit --coverage --verbose",
     "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"yarn watch-ts\" \"yarn watch-node\"",
     "watch-debug": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"yarn watch-ts\" \"yarn serve-debug\"",
     "watch-node": "nodemon dist/server.js",
@@ -28,6 +28,7 @@
     "watch-ts": "tsc -w"
   },
   "dependencies": {
+    "@types/passport-jwt": "^3.0.3",
     "async": "^3.1.0",
     "bcrypt": "^5.0.0",
     "bcrypt-nodejs": "^0.0.3",
@@ -43,8 +44,10 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.19",
     "lusca": "^1.6.1",
+    "mongodb": "^3.6.2",
     "mongoose": "^5.7.5",
     "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
     "validator": "^13.1.17",
     "winston": "^3.2.1"
   },
@@ -69,7 +72,6 @@
     "@types/lusca": "^1.6.1",
     "@types/mongoose": "^5.5.18",
     "@types/node": "^12.7.8",
-    "@types/passport-local-mongoose": "^4.0.13",
     "@types/request": "^2.48.3",
     "@types/request-promise": "^4.1.44",
     "@types/supertest": "^2.0.8",
@@ -83,6 +85,7 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
     "jest": "^24.9.0",
+    "jest-environment-node": "^26.3.0",
     "nodemon": "^1.19.2",
     "prettier": "^2.1.2",
     "supertest": "^4.0.2",
