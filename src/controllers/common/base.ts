@@ -1,5 +1,6 @@
-import { Response, Router } from 'express';
+import { Request, Response, NextFunction, Router } from 'express';
 import httpStatus from 'http-status';
+import { validationResult, ValidationError, ValidationChain } from 'express-validator';
 
 interface Controller {
   path: string;
@@ -18,8 +19,22 @@ abstract class BaseController implements Controller {
 
   abstract initRoutes(): void;
 
-  private static jsonResponse(res: Response, code: number, message: string) {
-    return res.status(code).json({ message });
+  public validate = (validations: Array<ValidationChain>) => {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      await Promise.all(validations.map((validation) => validation.run(req)));
+
+      const errors = validationResult(req);
+
+      if (errors.isEmpty()) {
+        return next();
+      }
+
+      return this.badRequest(res, 'Validation error', errors.array());
+    };
+  };
+
+  private static jsonResponse(res: Response, code: number, message: string, errors?: Array<string | ValidationError>) {
+    return res.status(code).json({ message, errors });
   }
 
   public ok<T>(res: Response, dto?: T) {
@@ -33,8 +48,8 @@ abstract class BaseController implements Controller {
     return res.sendStatus(httpStatus.CREATED);
   }
 
-  public badRequest(res: Response, message?: string) {
-    return BaseController.jsonResponse(res, httpStatus.BAD_REQUEST, message || 'Bad Request');
+  public badRequest(res: Response, message?: string, errors?: Array<string | ValidationError>) {
+    return BaseController.jsonResponse(res, httpStatus.BAD_REQUEST, message || 'Bad Request', errors);
   }
 
   public unauthorized(res: Response, message?: string) {

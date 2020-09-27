@@ -8,13 +8,18 @@ describe('(Models) User', () => {
   describe('should create User object', () => {
     it('with valid credentials', async () => {
       const email = 'test@test.com';
+      const password = 'password';
 
-      const user = new User({ email, password: 'password' });
+      const user = new User({ email, password });
       await user.save();
 
       const savedUser = await User.findOne({ email });
 
       expect(savedUser).to.exist;
+      expect(savedUser.password).to.not.equal(password);
+
+      const isMatch = await user.validatePassword(password);
+      expect(isMatch).to.be.true;
     });
   });
 
