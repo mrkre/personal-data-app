@@ -44,7 +44,10 @@ abstract class BaseController implements Controller {
     return res.sendStatus(httpStatus.OK);
   }
 
-  public created(res: Response) {
+  public created<T>(res: Response, dto?: T) {
+    if (!!dto) {
+      return res.status(httpStatus.CREATED).json(dto);
+    }
     return res.sendStatus(httpStatus.CREATED);
   }
 
