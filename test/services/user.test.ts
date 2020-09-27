@@ -38,4 +38,20 @@ describe('(Services) UserService', () => {
       expect(user).to.be.null;
     });
   });
+
+  describe('create', () => {
+    it('should create new user', async () => {
+      const user = await userService.create('new@test.com', password);
+      expect(user).to.exist;
+    });
+    it('should reject existing user', () => {
+      return userService
+        .create(email, password)
+        .then((res) => expect(res).to.not.exist)
+        .catch((err) => {
+          expect(err).to.exist;
+          expect(err.message).to.equal('Email and password combination does not match');
+        });
+    });
+  });
 });

@@ -10,8 +10,7 @@ export function handleNotFound(req: Request, res: Response, next: NextFunction) 
 
 // default error handler
 export function handleError(error: HttpException, req: Request, res: Response, next: NextFunction) {
-  const status = error.status || httpStatus.INTERNAL_SERVER_ERROR;
-  const message = error.message || 'Something went wrong';
+  const { status = httpStatus.INTERNAL_SERVER_ERROR, message = 'Something went wrong', errors } = error;
 
-  res.status(status).send({ message });
+  res.status(status).send({ message, errors });
 }
