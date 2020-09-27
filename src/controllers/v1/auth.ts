@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import BaseController from './base';
+import BaseController from '../common/base';
 
 class AuthController extends BaseController {
   constructor() {
