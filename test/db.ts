@@ -11,6 +11,14 @@ const setupDb = () => {
     useCreateIndex: true,
   };
 
+  async function removeAllCollections() {
+    const collections = Object.keys(mongoose.connection.collections);
+    for (const collectionName of collections) {
+      const collection = mongoose.connection.collections[collectionName];
+      await collection.deleteMany();
+    }
+  }
+
   beforeAll(async () => {
     mongoServer = new MongoMemoryServer();
 
@@ -18,6 +26,10 @@ const setupDb = () => {
     await mongoose.connect(mongoUri, opts, (err) => {
       if (err) console.error(err);
     });
+  });
+
+  afterEach(async () => {
+    await removeAllCollections();
   });
 
   afterAll(async () => {
