@@ -17,6 +17,8 @@ Experimental personal data app built on top of [TypeScript-Node-Starter](https:/
 
 Run `yarn install` to install all the project dependencies.
 
+For development: run `yarn watch`.
+
 # Deployment
 
 TBD

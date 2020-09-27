@@ -7,9 +7,10 @@ import mongo from 'connect-mongo';
 import path from 'path';
 import mongoose from 'mongoose';
 import bluebird from 'bluebird';
-import { MONGODB_URI, SESSION_SECRET } from './util/secrets';
+import passport from 'passport';
+import { MONGO_URL, SESSION_SECRET } from './util/secrets';
 import routes from './routes';
-import { health } from './controllers/health';
+import { handleNotFound, handleError } from './middleware/error';
 
 const MongoStore = mongo(session);
 
@@ -17,11 +18,16 @@ const MongoStore = mongo(session);
 const app = express();
 
 // Connect to MongoDB
-const mongoUrl = MONGODB_URI;
+const mongoUrl = MONGO_URL;
 mongoose.Promise = bluebird;
 
 mongoose
-  .connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true })
+  .connect(mongoUrl, {
+    useNewUrlParser: true,
+    useFindAndModify: false,
+    useCreateIndex: true,
+    useUnifiedTopology: true,
+  })
   .then(() => {
     /** ready to use. The `mongoose.connect()` promise resolves to undefined. */
   })
@@ -46,6 +52,8 @@ app.use(
     }),
   }),
 );
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(lusca.xframe('SAMEORIGIN'));
 app.use(lusca.xssProtection(true));
 
@@ -54,7 +62,10 @@ app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }))
 /**
  * API routes.
  */
-app.use('/api', routes());
-app.use('/health', health);
+app.use('/', routes());
+
+// error middleware
+app.use(handleNotFound);
+app.use(handleError);
 
 export default app;

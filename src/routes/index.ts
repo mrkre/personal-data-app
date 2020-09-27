@@ -1,14 +1,14 @@
 import express from 'express';
 import apiV1 from './v1';
-import { health } from '../controllers/health';
+import HealthController from '../controllers/common/health';
 
 export default () => {
   const router = express.Router();
 
-  router.get('/', health);
-  router.use('/health', health);
+  const healthController = new HealthController();
 
-  router.use('/v1', apiV1());
+  router.use(healthController.path, healthController.router);
+  router.use('/api/v1', apiV1());
 
   return router;
 };
