@@ -1,17 +1,17 @@
-import mongoose from 'mongoose';
+import { Schema, Document, Model, model } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcrypt';
 
-export type UserDocument = mongoose.Document & {
+export interface UserDocument extends Document {
   email: string;
   password: string;
-  active?: boolean;
+  active: boolean;
   validatePassword: validatePasswordFunction;
-};
+}
 
 type validatePasswordFunction = (passwordToValidate: string) => boolean;
 
-const userSchema = new mongoose.Schema(
+const userSchema = new Schema(
   {
     email: {
       type: String,
@@ -64,6 +64,6 @@ const validatePassword: (passwordToValidate: string) => Promise<boolean | void> 
 
 userSchema.methods.validatePassword = validatePassword;
 
-const User = mongoose.model<UserDocument>('users', userSchema);
+const User: Model<UserDocument> = model<UserDocument>('users', userSchema);
 
 export default User;

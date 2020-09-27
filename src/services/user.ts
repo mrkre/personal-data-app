@@ -1,6 +1,8 @@
+import { DocumentQuery } from 'mongoose';
 import User, { UserDocument } from '../models/User';
 import { Service } from 'service';
-import BadRequestException from '../exceptions/BadRequestException';
+import { UnauthorizedException } from '../exceptions';
+import messages from '../messages/auth';
 
 class UserService implements Service {
   public name: string;
@@ -9,11 +11,11 @@ class UserService implements Service {
     this.name = 'UserService';
   }
 
-  findOneByEmail = (email: string): UserDocument | {} => {
+  findOneByEmail = (email: string): DocumentQuery<UserDocument | null, UserDocument, {}> => {
     return User.findOne({ email });
   };
 
-  findOneById = (id: string): UserDocument | {} => {
+  findOneById = (id: string): DocumentQuery<UserDocument | null, UserDocument, {}> => {
     return User.findOne({ _id: id });
   };
 
@@ -22,7 +24,7 @@ class UserService implements Service {
 
     if (existingUser) {
       // throw generic error to prevent malicious user from guessing
-      throw new BadRequestException('Email and password combination does not match');
+      throw new UnauthorizedException(messages.EMAIL_PASSWORD_NOT_MATCH);
     }
 
     const user = new User({ email, password });
