@@ -43,6 +43,16 @@ describe('(Controllers) Auth', () => {
             ]);
           });
       });
+
+      it('when password does not match', () => {
+        return request(app)
+          .post('/api/v1/auth/login')
+          .send({ email: users[0].email, password: 'wrongPassword' })
+          .expect(httpStatus.BAD_REQUEST)
+          .then((result) => {
+            expect(result.body.message).to.equal(messages.INVALID_EMAIL_OR_PASSWORD);
+          });
+      });
     });
   });
 
@@ -64,6 +74,18 @@ describe('(Controllers) Auth', () => {
   });
 
   describe('POST /api/v1/auth/register', () => {
+    describe('should return 200', () => {
+      it('when new user is registered', () => {
+        return request(app)
+          .post('/api/v1/auth/register')
+          .send({ email: 'new@test.com', password: 'password', confirmPassword: 'password' })
+          .expect(httpStatus.OK)
+          .then((result) => {
+            expect(result.body.token).to.exist;
+          });
+      });
+    });
+
     describe('should return 400', () => {
       it('without correct body', () => {
         return request(app)
@@ -81,6 +103,14 @@ describe('(Controllers) Auth', () => {
               { msg: messages.INVALID_EMAIL, param: 'email', location: 'body', value: '@' },
             ]);
           });
+      });
+
+      it('when user exists', () => {
+        return request(app)
+          .post('/api/v1/auth/register')
+          .send({ email: users[0].email, password: 'password', confirmPassword: 'password' })
+          .expect(httpStatus.BAD_REQUEST)
+          .then((result) => expect(result.body.message).to.equal(messages.USER_EXISTS));
       });
     });
   });

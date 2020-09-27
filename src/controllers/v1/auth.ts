@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { body } from 'express-validator';
-import passport from 'passport';
+import asyncHandler from 'express-async-handler';
 import * as jwt from 'jsonwebtoken';
 import BaseController from '../common/base';
 import UserService from '../../services/user';
@@ -32,7 +32,7 @@ class AuthController extends BaseController {
           .isLength({ min: 6 })
           .withMessage(messages.PASSWORD_WEAK),
       ]),
-      this.login,
+      asyncHandler(this.login),
     );
     this.router.post('/logout', this.logout);
     this.router.post(
@@ -56,7 +56,7 @@ class AuthController extends BaseController {
             return true;
           }),
       ]),
-      this.register,
+      asyncHandler(this.register),
     );
   }
 
@@ -99,8 +99,20 @@ class AuthController extends BaseController {
    * @route POST /auth/register
    * @memberOf AuthController
    */
-  register = (req: Request, res: Response) => {
-    return this.ok(res, {});
+  register = async (req: Request, res: Response) => {
+    const { email, password } = req.body;
+
+    const existingUser = await this.userService.findOneByEmail(email);
+
+    if (existingUser) {
+      throw new BadRequestException(messages.USER_EXISTS);
+    }
+
+    const user = await this.userService.create(email, password);
+
+    const token = jwt.sign({ email: user.email }, JWT_SECRET_OR_KEY, { expiresIn: JWT_TOKEN_EXPIRATION });
+
+    return this.ok(res, { token });
   };
 }
 
