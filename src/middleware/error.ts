@@ -17,7 +17,7 @@ export function handleError(error: HttpException, req: Request, res: Response, n
 
   const message = error.message?.length > 0 ? error.message : 'Something went wrong';
 
-  const isDebug = ENVIRONMENT === 'development';
+  const isDebug = ENVIRONMENT === 'dev';
 
   // log error
   if (status >= httpStatus.INTERNAL_SERVER_ERROR || isDebug) {

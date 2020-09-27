@@ -24,7 +24,7 @@ class UserService implements Service {
 
     if (existingUser) {
       // throw generic error to prevent malicious user from guessing
-      throw new UnauthorizedException(messages.EMAIL_PASSWORD_NOT_MATCH);
+      throw new UnauthorizedException(messages.INVALID_EMAIL_OR_PASSWORD);
     }
 
     const user = new User({ email, password });

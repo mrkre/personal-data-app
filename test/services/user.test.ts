@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import User from '../../src/models/User';
 import UserService from '../../src/services/user';
 import setupDb from '../db';
+import messages from '../../src/messages/auth';
 
 describe('(Services) UserService', () => {
   setupDb();
@@ -13,7 +14,7 @@ describe('(Services) UserService', () => {
   let userId: string;
 
   beforeAll(async () => {
-    const user = await User.create({ email, password });
+    const user = await User.create({ email, password, active: true });
     userId = user.id;
   });
 
@@ -50,7 +51,7 @@ describe('(Services) UserService', () => {
         .then((res) => expect(res).to.not.exist)
         .catch((err) => {
           expect(err).to.exist;
-          expect(err.message).to.equal('Email and password combination does not match');
+          expect(err.message).to.equal(messages.INVALID_EMAIL_OR_PASSWORD);
         });
     });
   });
