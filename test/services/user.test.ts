@@ -13,7 +13,7 @@ describe('(Services) UserService', () => {
 
   let userId: string;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     const user = await User.create({ email, password, active: true });
     userId = user.id;
   });
