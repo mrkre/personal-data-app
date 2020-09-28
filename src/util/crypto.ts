@@ -13,9 +13,9 @@ function getRandomKey(byteLength: number = 32) {
  * @param key
  * @param text
  */
-function encrypt(key: string, text: string) {
+function encrypt(key: string, text: string): string {
   const cryptr = new Cryptr(key);
-  return cryptr.encrypt(text);
+  return cryptr.encrypt(text as string);
 }
 
 /**
@@ -26,7 +26,7 @@ function encrypt(key: string, text: string) {
  * @param key
  * @param encrypted
  */
-function decrypt(key: string, encrypted: string) {
+function decrypt<V>(key: string, encrypted: string): string {
   const cryptr = new Cryptr(key);
   return cryptr.decrypt(encrypted);
 }

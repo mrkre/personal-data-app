@@ -79,7 +79,9 @@ class AuthController extends BaseController {
       throw new BadRequestException(messages.INVALID_EMAIL_OR_PASSWORD);
     }
 
-    const token = jwt.sign({ email: user.email }, JWT_SECRET_OR_KEY, { expiresIn: JWT_TOKEN_EXPIRATION });
+    const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET_OR_KEY, {
+      expiresIn: JWT_TOKEN_EXPIRATION,
+    });
 
     return this.ok(res, { token });
   };
@@ -102,15 +104,11 @@ class AuthController extends BaseController {
   register = async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
-    const existingUser = await this.userService.findOneByEmail(email);
-
-    if (existingUser) {
-      throw new BadRequestException(messages.USER_EXISTS);
-    }
-
     const user = await this.userService.create(email, password);
 
-    const token = jwt.sign({ email: user.email }, JWT_SECRET_OR_KEY, { expiresIn: JWT_TOKEN_EXPIRATION });
+    const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET_OR_KEY, {
+      expiresIn: JWT_TOKEN_EXPIRATION,
+    });
 
     return this.ok(res, { token });
   };
