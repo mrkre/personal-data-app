@@ -26,7 +26,7 @@ function encrypt(key: string, text: string): string {
  * @param key
  * @param encrypted
  */
-function decrypt<V>(key: string, encrypted: string): string {
+function decrypt(key: string, encrypted: string): string {
   const cryptr = new Cryptr(key);
   return cryptr.decrypt(encrypted);
 }

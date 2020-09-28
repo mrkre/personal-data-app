@@ -4,6 +4,9 @@ import { Service } from 'service';
 import { BadRequestException } from '../exceptions';
 import messages from '../messages/auth';
 
+/**
+ * @class UserService
+ */
 class UserService implements Service {
   public name: string;
 
