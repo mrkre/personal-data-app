@@ -1,20 +1,20 @@
 import { Schema, Document, Model, model, Types } from 'mongoose';
 
 export interface Address {
-  street: string;
-  city: string;
+  street?: string;
+  city?: string;
   unit?: string;
-  country: string;
-  postalCode: string;
+  country?: string;
+  postalCode?: string;
 }
 
 export interface ProfileDocument extends Document {
   user: string;
-  firstName: string;
-  lastName: string;
-  dateOfBirth: Date;
-  address: Address;
-  phone: string;
+  firstName?: string;
+  lastName?: string;
+  dateOfBirth?: Date;
+  address?: Address;
+  phone?: string;
 }
 
 const profileSchema = new Schema(
