@@ -3,7 +3,6 @@ import { DocumentQuery } from 'mongoose';
 import Profile, { ProfileDocument } from '../models/Profile';
 import { Service } from 'service';
 import { encrypt, decrypt } from '../util/crypto';
-// import messages from '../messages/profile';
 
 /**
  * @class ProfileService
@@ -18,7 +17,6 @@ class ProfileService implements Service {
   }
 
   private encryptFields = (key: string, params: { [s: string]: unknown }) => {
-    console.log('params >>', params);
     const entries: [string, unknown][] = Object.entries(params);
     return entries.reduce((obj: { [s: string]: unknown }, [field, value]) => {
       if (typeof value === 'object') {
