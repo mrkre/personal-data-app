@@ -3,6 +3,7 @@ import validator from 'validator';
 import bcrypt from 'bcrypt';
 
 export interface UserDocument extends Document {
+  id: string;
   email: string;
   password: string;
   active: boolean;

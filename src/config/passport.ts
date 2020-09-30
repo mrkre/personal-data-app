@@ -1,9 +1,9 @@
+import { Request, Response, NextFunction } from 'express';
 import passport from 'passport';
 import passportJwt from 'passport-jwt';
 import { UnauthorizedException } from '../exceptions';
 import UserService from '../services/user';
 import { JWT_SECRET_OR_KEY } from '../util/secrets';
-import messages from '../messages/auth';
 
 const JwtStrategy = passportJwt.Strategy;
 const ExtractJwt = passportJwt.ExtractJwt;
@@ -17,11 +17,11 @@ passport.use(
       secretOrKey: JWT_SECRET_OR_KEY,
     },
     function (token, done) {
-      userService
-        .findOneByEmail(token.email)
+      return userService
+        .findOneById(token.userId)
         .then((user) => {
-          if (!!user.active || !!user) {
-            return done(new UnauthorizedException(messages.INVALID_EMAIL_OR_PASSWORD), false);
+          if (!user.active || !user) {
+            return done(new UnauthorizedException());
           }
           return done(undefined, user, token);
         })
@@ -31,3 +31,18 @@ passport.use(
     },
   ),
 );
+
+/*
+ * @method authenticate
+ * @desc authentication middleware
+ */
+export const authenticate = (req: Request, res: Response, next: NextFunction) =>
+  passport.authenticate('jwt', { session: false }, function (err, user) {
+    if (err) return next(err);
+
+    if (!user) {
+      return next(new UnauthorizedException());
+    }
+    req.user = user;
+    next();
+  })(req, res, next);
