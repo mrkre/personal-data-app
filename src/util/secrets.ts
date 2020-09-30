@@ -12,11 +12,8 @@ if (fs.existsSync('.env')) {
 
 export const ENVIRONMENT = process.env.NODE_ENV;
 
-const prod = ENVIRONMENT === 'production'; // Anything else is treated as 'dev'
-
 export const SESSION_SECRET = process.env['SESSION_SECRET'];
-export const MONGO_URL =
-  ENVIRONMENT === 'prod' || ENVIRONMENT === 'test' ? process.env['MONGO_URL'] : process.env['MONGO_URL_LOCAL'];
+export const MONGO_URL = process.env['MONGO_URL'];
 
 if (!SESSION_SECRET) {
   logger.error('No client secret. Set SESSION_SECRET environment variable.');
@@ -24,11 +21,8 @@ if (!SESSION_SECRET) {
 }
 
 if (!MONGO_URL) {
-  if (prod) {
-    logger.error('No mongo connection string. Set MONGO_URL environment variable.');
-  } else {
-    logger.error('No mongo connection string. Set MONGO_URL_LOCAL environment variable.');
-  }
+  logger.error('No mongo connection string. Set MONGO_URL environment variable.');
+
   process.exit(1);
 }
 
