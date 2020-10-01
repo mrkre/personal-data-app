@@ -26,6 +26,7 @@ describe('(Services) ProfileService', () => {
       const profile = await profileService.get(userId);
 
       expect(profile).to.exist;
+      expect(profile.encrypted).to.be.false;
     });
     it('should return decrypted Profile with key', async () => {
       const userId = Types.ObjectId().toString();
@@ -52,6 +53,7 @@ describe('(Services) ProfileService', () => {
       const decryptedProfile = await profileService.get(userId, key);
 
       expect(decryptedProfile.firstName).to.equal(params.firstName);
+      expect(decryptedProfile.encrypted).to.be.true;
     });
   });
 
@@ -65,7 +67,10 @@ describe('(Services) ProfileService', () => {
         address: { city: 'New York', country: 'US' },
       };
 
-      await profileService.createOrUpdate(userId, key, params);
+      const saved = await profileService.createOrUpdate(userId, key, params);
+
+      expect(saved.firstName).to.not.equal(params.firstName);
+      expect(saved.encrypted).to.be.true;
 
       const profile = await Profile.findOne({ user: userId });
 
