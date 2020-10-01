@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import { body } from 'express-validator';
 import asyncHandler from 'express-async-handler';
 import * as jwt from 'jsonwebtoken';
-import BaseController from '../common/base';
-import UserService from '../../services/user';
-import messages from '../../messages/auth';
-import BadRequestException from '../../exceptions/BadRequestException';
-import { JWT_SECRET_OR_KEY, JWT_TOKEN_EXPIRATION } from '../../util/secrets';
+import BaseController from '../../common/base';
+import UserService from '../../../services/user';
+import messages from '../../../messages/auth';
+import BadRequestException from '../../../exceptions/BadRequestException';
+import { JWT_SECRET_OR_KEY, JWT_TOKEN_EXPIRATION } from '../../../util/secrets';
+import validations from './validations';
 
 /**
  * @class AuthController
@@ -21,43 +21,9 @@ class AuthController extends BaseController {
   }
 
   public initRoutes(): void {
-    this.router.post(
-      '/login',
-      this.validate([
-        body('email').isEmail().trim().withMessage(messages.INVALID_EMAIL),
-        body('password')
-          .exists()
-          .trim()
-          .withMessage(messages.PASSWORD_REQUIRED)
-          .isLength({ min: 6 })
-          .withMessage(messages.PASSWORD_WEAK),
-      ]),
-      asyncHandler(this.login),
-    );
+    this.router.post('/login', this.validate(validations.login), asyncHandler(this.login));
     this.router.post('/logout', this.logout);
-    this.router.post(
-      '/register',
-      this.validate([
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        body('email').normalizeEmail({ gmail_remove_dots: false }).isEmail().withMessage(messages.INVALID_EMAIL),
-        body('password')
-          .exists()
-          .trim()
-          .withMessage(messages.PASSWORD_REQUIRED)
-          .isLength({ min: 6 })
-          .withMessage(messages.PASSWORD_WEAK),
-        body('confirmPassword')
-          .exists()
-          .withMessage(messages.CONFIRM_PASSWORD_REQUIRED)
-          .custom((value, { req }) => {
-            if (value !== req.body.password) {
-              throw new BadRequestException(messages.PASSWORDS_DO_NOT_MATCH);
-            }
-            return true;
-          }),
-      ]),
-      asyncHandler(this.register),
-    );
+    this.router.post('/register', this.validate(validations.register), asyncHandler(this.register));
   }
 
   /**
