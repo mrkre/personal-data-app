@@ -3,6 +3,7 @@ import compression from 'compression';
 import session from 'express-session';
 import bodyParser from 'body-parser';
 import lusca from 'lusca';
+import cors from 'cors';
 import mongo from 'connect-mongo';
 import path from 'path';
 import mongoose from 'mongoose';
@@ -56,6 +57,16 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(lusca.xframe('SAMEORIGIN'));
 app.use(lusca.xssProtection(true));
+
+const options: cors.CorsOptions = {
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'X-Access-Token'],
+  credentials: true,
+  methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
+  preflightContinue: false,
+};
+
+app.use(cors(options));
+app.options('*', cors(options));
 
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }));
 
