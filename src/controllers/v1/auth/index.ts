@@ -89,7 +89,7 @@ class AuthController extends BaseController {
   authenticate = (req: Request, res: Response) => {
     const user = req.user;
 
-    return this.ok(res, { id: user });
+    return this.ok(res, { id: user.id, timestamp: new Date() });
   };
 }
 

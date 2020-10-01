@@ -20,7 +20,7 @@ passport.use(
       return userService
         .findOneById(token.userId)
         .then((user) => {
-          if (!user.active || !user) {
+          if (!user?.active) {
             return done(new UnauthorizedException());
           }
           return done(undefined, user, token);
