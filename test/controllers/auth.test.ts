@@ -114,4 +114,27 @@ describe('(Controllers) Auth', () => {
       });
     });
   });
+
+  describe('GET /api/v1/auth/token', () => {
+    describe('should return 200', () => {
+      it('when token is valid', async () => {
+        const {
+          body: { token },
+        } = await request(app)
+          .post('/api/v1/auth/login')
+          .send({ email: users[0].email, password: 'password' })
+          .expect(httpStatus.OK);
+
+        return request(app).get('/api/v1/auth/token').auth(token, { type: 'bearer' }).expect(httpStatus.OK);
+      });
+    });
+    describe('should return 400', () => {
+      it('when using invalid token', () => {
+        const token =
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1Zjc1YzJhMTQ3ZDZhMTkwMTQ3Njg2ZTciLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJpYXQiOjE2MDE1NTMwNTgsImV4cCI6MTYwMTU1NjY1OH0.18tLj589OXcHXimbmFfz9nkTKrsk3E2DyeEwi0NaZ2k';
+
+        return request(app).get('/api/v1/auth/token').auth(token, { type: 'bearer' }).expect(httpStatus.OK);
+      });
+    });
+  });
 });

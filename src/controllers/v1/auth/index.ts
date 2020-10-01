@@ -6,6 +6,7 @@ import UserService from '../../../services/user';
 import messages from '../../../messages/auth';
 import BadRequestException from '../../../exceptions/BadRequestException';
 import { JWT_SECRET_OR_KEY, JWT_TOKEN_EXPIRATION } from '../../../util/secrets';
+import { authenticate } from '../../../config/passport';
 import validations from './validations';
 
 /**
@@ -24,6 +25,7 @@ class AuthController extends BaseController {
     this.router.post('/login', this.validate(validations.login), asyncHandler(this.login));
     this.router.post('/logout', this.logout);
     this.router.post('/register', this.validate(validations.register), asyncHandler(this.register));
+    this.router.get('/token', authenticate, this.authenticate);
   }
 
   /**
@@ -77,6 +79,17 @@ class AuthController extends BaseController {
     });
 
     return this.ok(res, { token });
+  };
+
+  /**
+   * Authenticate token
+   * @route POST /auth/token
+   * @memberOf AuthController
+   */
+  authenticate = (req: Request, res: Response) => {
+    const user = req.user;
+
+    return this.ok(res, { id: user });
   };
 }
 
