@@ -1,8 +1,11 @@
 import { pick, omit } from 'lodash';
-import { DocumentQuery } from 'mongoose';
 import Profile, { ProfileDocument } from '../models/Profile';
 import { Service } from 'service';
 import { encrypt, decrypt } from '../util/crypto';
+
+interface ProfileDocumentObject extends ProfileDocument {
+  encrypted: boolean;
+}
 
 /**
  * @class ProfileService
@@ -57,21 +60,30 @@ class ProfileService implements Service {
         user,
         ...decrypted,
         ...rest,
-      } as ProfileDocument;
+        encrypted: true,
+      } as ProfileDocumentObject;
     }
-    return profile;
+    return {
+      ...profile,
+      encrypted: false,
+    };
   };
 
-  createOrUpdate = async (
-    userId: string,
-    key: string,
-    params: { [s: string]: unknown },
-  ): Promise<DocumentQuery<ProfileDocument | null, ProfileDocument>> => {
+  createOrUpdate = async (userId: string, key: string, params: { [s: string]: unknown }) => {
     const fields = this.encryptFields(key, pick(params, this.fieldsToEncrypt));
 
     const rest = omit(params, this.fieldsToEncrypt);
 
-    return Profile.findOneAndUpdate({ user: userId }, { $set: { ...fields, ...rest } }, { upsert: true, new: true });
+    const profile: ProfileDocument = await Profile.findOneAndUpdate(
+      { user: userId },
+      { $set: { ...fields, ...rest } },
+      { upsert: true, new: true },
+    );
+
+    return {
+      ...profile,
+      encrypted: true,
+    } as ProfileDocumentObject;
   };
 }
 
