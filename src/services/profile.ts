@@ -60,12 +60,12 @@ class ProfileService implements Service {
         user,
         ...decrypted,
         ...rest,
-        encrypted: true,
+        encrypted: false,
       } as ProfileDocumentObject;
     }
     return {
       ...profile,
-      encrypted: false,
+      encrypted: true,
     };
   };
 
