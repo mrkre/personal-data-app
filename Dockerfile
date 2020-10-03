@@ -1,9 +1,9 @@
 FROM mhart/alpine-node:14
 
-ENV NODE_ENV=dev
+ENV NODE_ENV=development
 WORKDIR /personal-data-app
 
-copy yarn.lock package.json ./
+COPY yarn.lock package.json ./
 RUN yarn install
 
 ENV NODE_ENV=production
