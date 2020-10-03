@@ -1,6 +1,6 @@
 FROM mhart/alpine-node:14
 
-ENV NODE_ENV=dev
+ENV NODE_ENV=development
 WORKDIR /personal-data-app
 
 COPY yarn.lock package.json ./
