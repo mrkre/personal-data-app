@@ -44,7 +44,7 @@ class ProfileService implements Service {
   };
 
   get = async (userId: string, key?: string) => {
-    const profile = await Profile.findOne({ user: userId });
+    const profile = await Profile.findOne({ user: userId }).lean();
 
     if (!profile) {
       return null;
@@ -53,7 +53,7 @@ class ProfileService implements Service {
     if (key) {
       const { user } = profile;
 
-      const decrypted = this.decryptFields(key, pick(profile.toObject(), this.fieldsToEncrypt));
+      const decrypted = this.decryptFields(key, pick(profile, this.fieldsToEncrypt));
       const rest = omit(profile, this.fieldsToEncrypt);
 
       return {
@@ -78,7 +78,7 @@ class ProfileService implements Service {
       { user: userId },
       { $set: { ...fields, ...rest } },
       { upsert: true, new: true },
-    );
+    ).lean();
 
     return {
       ...profile,
