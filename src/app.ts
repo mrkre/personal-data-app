@@ -59,7 +59,13 @@ app.use(lusca.xframe('SAMEORIGIN'));
 app.use(lusca.xssProtection(true));
 
 const options: cors.CorsOptions = {
-  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'X-Access-Token'],
+  // enable localhost in dev
+  ...(process.env.ENABLE_LOCALHOST_CORS && {
+    origin: (origin, callback) => {
+      callback(null, true);
+    },
+  }),
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'X-Access-Token', 'Authorization'],
   credentials: true,
   methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
   preflightContinue: false,
