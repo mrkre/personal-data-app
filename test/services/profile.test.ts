@@ -54,6 +54,28 @@ describe('(Services) ProfileService', () => {
 
       expect(decryptedProfile.firstName).to.equal(params.firstName);
       expect(decryptedProfile.encrypted).to.be.false;
+      expect(decryptedProfile.success).to.be.true;
+    });
+    it('should return encrypted profile with wrong key', async () => {
+      const userId = Types.ObjectId().toString();
+
+      const params = {
+        firstName: 'Dick',
+        lastName: 'Grayson',
+      };
+
+      const encryptedProfile = await Profile.create({
+        user: userId,
+        firstName: encrypt(key, params.firstName),
+        lastName: encrypt(key, params.lastName),
+      });
+
+      const decryptAttemptProfile = await profileService.get(userId, 'wrong-key');
+
+      expect(decryptAttemptProfile.encrypted).to.be.true;
+      expect(decryptAttemptProfile.success).to.be.false;
+
+      expect(encryptedProfile.firstName).to.equal(decryptAttemptProfile.firstName);
     });
   });
 
