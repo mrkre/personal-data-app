@@ -12,7 +12,7 @@ export interface ProfileDocument extends Document {
   user: string;
   firstName?: string;
   lastName?: string;
-  dateOfBirth?: Date;
+  dateOfBirth?: string;
   address?: Address;
   phone?: string;
 }
@@ -26,7 +26,7 @@ const profileSchema = new Schema(
     },
     firstName: String,
     lastName: String,
-    dateOfBirth: Date,
+    dateOfBirth: String,
     address: {
       street: String,
       city: String,
